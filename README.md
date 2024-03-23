@@ -24,7 +24,9 @@ pip3 install -r requirements.txt
 
 correr tests con pytest
 ```
-pytest
+pytest --cov=app/ --cov-report xml
+coverage xml
+coverage html -d coverage_report
 ```
 
 correr flask

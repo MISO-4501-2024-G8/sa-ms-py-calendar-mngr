@@ -6,3 +6,9 @@ venv/**
 __pycache__/
 /__pycache__
 **/__pycache__/**
+
+*.coverage
+coverage.xml
+/coverage_report
+
+/.vscode
