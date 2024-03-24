@@ -24,7 +24,7 @@ pip3 install -r requirements.txt
 
 correr tests con pytest
 ```
-pytest --cov=app/ --cov-report xml
+pytest --cov=app/ --cov-report xml --junitxml=pytest-report.xml
 coverage xml
 coverage html -d coverage_report
 ```
