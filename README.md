@@ -34,3 +34,13 @@ correr flask
 export FLASK_APP=app/app.py
 flask run
 ```
+
+Generar imagen de docker
+```
+docker build -t calendar-mngr .
+```
+
+Correr imagen de docker
+```
+docker run -p 5001:5001 calendar-mngr
+```
