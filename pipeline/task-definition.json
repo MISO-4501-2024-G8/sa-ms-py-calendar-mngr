@@ -1,7 +1,7 @@
 {
     "containerDefinitions": [
         {
-            "name": "ms-py-calendar-mngr",
+            "name": "ms-py-calendar-mng",
             "image": "public.ecr.aws/u7g2q2l0/ms-py-calendar-mngr:latest",
             "cpu": 256,
             "memory": 512,
