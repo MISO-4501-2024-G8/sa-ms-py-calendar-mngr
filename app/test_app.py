@@ -8,7 +8,7 @@ def client():
         yield client
 
 def test_hello(client):
-    response = client.get('/')
+    response = client.get('/index')
     assert '¡Hola Mundo!'.encode('utf-8') in response.data
 
 def test_status(client):
