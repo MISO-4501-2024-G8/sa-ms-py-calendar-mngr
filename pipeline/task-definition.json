@@ -65,5 +65,10 @@
     ],
     "cpu": "256",
     "memory": "512",
-    "tags": []
+    "tags": [
+        {
+            "key": "ekey",
+            "value": "evalue"
+        }
+    ]
 }
