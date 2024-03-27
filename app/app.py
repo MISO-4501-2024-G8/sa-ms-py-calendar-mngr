@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 import json
 
 app=Flask(__name__)
@@ -12,7 +12,7 @@ def health_check():
     response = {
         'status': 'OK'
     }
-    return json.dumps(response), 200
+    return jsonify(response), 200
 
 if __name__=='__main__':
     app.run(port=5001)

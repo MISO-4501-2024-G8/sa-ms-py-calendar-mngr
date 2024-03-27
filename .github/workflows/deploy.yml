@@ -15,7 +15,7 @@ jobs:
       ms-name: 'ms-py-calendar-mngr'
       task-definition-file: './pipeline/task-definition.json'
       cluster-name: 'ClusterRegisterLogin'
-      service-name: 'ms-py-calendar-mng'
+      service-name: 'ms-py-calendar-mngr'
       desired-count: 1
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
