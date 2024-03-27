@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feature/*
+
 jobs:
   requirements-frontend:
     uses: MISO-4501-2024-G8/sa-pipeline/.github/workflows/deploy_backecs_py.yml@feature/UpdatePipelines
