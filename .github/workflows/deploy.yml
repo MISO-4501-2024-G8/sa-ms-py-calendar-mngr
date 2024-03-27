@@ -13,9 +13,10 @@ jobs:
       aws-region: 'us-east-1'
       ecr-repo-url: 'public.ecr.aws/u7g2q2l0'
       ms-name: 'ms-py-calendar-mngr'
-      task-definition-file: 'pipeline/task-definition.json'
+      task-definition-file: './pipeline/task-definition.json'
       cluster-name: 'ClusterRegisterLogin'
       service-name: 'ms-py-calendar-mngr'
+      desired-count: 1
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
