@@ -9,7 +9,7 @@ def client():
 
 def test_hello(client):
     response = client.get('/index')
-    assert '¡Hola Mundo!'.encode('utf-8') in response.data
+    assert '¡Hola Mundo!!'.encode('utf-8') in response.data
 
 def test_status(client):
     response = client.get('/')
