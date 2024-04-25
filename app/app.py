@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from modelos.modelos import db
-from vistas import VistaStatusCheck, VistaTrainingPlan
+from vistas import VistaStatusCheck, VistaTrainingSession, VistaTrainingSessionID, VistaSportSession, VistaSportSessionID
 
 from decouple import config
 
@@ -26,7 +26,10 @@ api = Api(app)
 
 
 api.add_resource(VistaStatusCheck, '/')
-api.add_resource(VistaTrainingPlan, '/training_session')
+api.add_resource(VistaTrainingSession, '/training_session')
+api.add_resource(VistaTrainingSessionID, '/training_session/<string:id>')
+api.add_resource(VistaSportSession, '/sport_session')
+api.add_resource(VistaSportSessionID, '/sport_session/<string:id>')
 
 jwt = JWTManager(app)
 
