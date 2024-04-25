@@ -1,19 +1,11 @@
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from decimal import Decimal as D 
+
+from flask_sqlalchemy import SQLAlchemy
+from marshmallow import fields, Schema
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 import sqlalchemy.types as types
 from sqlalchemy.orm import relationship
-
-class SqliteNumeric(types.TypeDecorator):     
-    impl = types.String     
-    def load_dialect_impl(self, dialect):         
-        return dialect.type_descriptor(types.VARCHAR(100))     
-    def process_bind_param(self, value, dialect):         
-        return str(value)     
-    def process_result_value(self, value, dialect):         
-        return D(value)  
-
 
 db = SQLAlchemy()
 
@@ -25,7 +17,7 @@ class TrainingSession(db.Model):
     id_event  = db.Column(db.String(255))
     event_category = db.Column(db.String(50))
     sport_type = db.Column(db.String(50))
-    session_date = db.Column(db.DateTime, default=datetime.now)
+    session_date = db.Column(db.DateTime)
     createdAt = db.Column(db.DateTime)
     updatedAt = db.Column(db.DateTime)
 
@@ -40,7 +32,7 @@ class SportsSession(db.Model):
     repeats = db.Column(db.Integer)
     location = db.Column(db.String(50))
     total_time = db.Column(db.Integer)
-    session_event = db.Column(db.DateTime, default=datetime.now)
+    session_event = db.Column(db.DateTime)
     qty_objectives_achived = db.Column(db.Integer)
     createdAt = db.Column(db.DateTime)
     updatedAt = db.Column(db.DateTime)

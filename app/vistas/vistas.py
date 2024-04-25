@@ -29,6 +29,7 @@ objective_instruction_schema = ObjectiveInstructionSchema()
 
 date_format = "%Y-%m-%d %H:%M:%S"
 
+
 error_msg = "Error: "
 error_upd_msg = "No se pudo Realizar la Actualización "
 
@@ -103,7 +104,7 @@ def create_sport_session(
 
 class VistaStatusCheck(Resource):
     def get(self):
-        return {"status": "ok", "code": 200}, 200
+        return {"message": "OK", "code": 200}, 200
 
 
 class VistaTrainingSession(Resource):
@@ -111,6 +112,7 @@ class VistaTrainingSession(Resource):
     def post(self):
         data = request.get_json()
         data["id"] = generate_uuid()
+        data["session_date"] = datetime.strptime(data["session_date"], date_format)
         data["createdAt"] = datetime.now()
         data["updatedAt"] = datetime.now()
         training_session = TrainingSession(**data)
@@ -171,11 +173,11 @@ class VistaTrainingSessionID(Resource):
         training_session.id_event = data["id_event"]
         training_session.event_category = data["event_category"]
         training_session.sport_type = data["sport_type"]
-        training_session.session_date = data["session_date"]
+        training_session.session_date = datetime.strptime(data["session_date"], date_format)
         training_session.updatedAt = datetime.now()
         db.session.commit()
         return {
-            "message": "Sesión de entrenamiento actualizada",
+            "message": "Sesión de Entrenamiento actualizada",
             "code": 200,
             "content": training_session_schema.dump(training_session),
         }, 200
@@ -195,7 +197,7 @@ class VistaTrainingSessionID(Resource):
 
         db.session.delete(training_session)
         db.session.commit()
-        return {"message": "Sesión de entrenamiento eliminada", "code": 200}, 200
+        return {"message": "Sesión de Entrenamiento eliminada", "code": 200}, 200
 
 
 class VistaSportSession(Resource):

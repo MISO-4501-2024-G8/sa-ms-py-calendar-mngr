@@ -5,13 +5,19 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from modelos.modelos import db
 from vistas import VistaStatusCheck, VistaTrainingSession, VistaTrainingSessionID, VistaSportSession, VistaSportSessionID
+import uuid
 
 from decouple import config
 
 app=Flask(__name__) # NOSONAR
 
+def generate_uuid():
+    uid = uuid.uuid4()
+    parts = str(uid).split('-')
+    return parts[0]
 
-DATABASE_URI = config('DATABASE_URL', default='sqlite:///training.db')
+
+DATABASE_URI = config('DATABASE_URL', default=f'sqlite:///training_{generate_uuid()}.db')
 print(' * DATABASE_URI:', DATABASE_URI)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
