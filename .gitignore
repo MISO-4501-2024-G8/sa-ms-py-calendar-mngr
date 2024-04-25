@@ -13,3 +13,7 @@ coverage.xml
 pytest-report.xml
 
 /.vscode
+.DS_Store
+
+
+**/*.db
