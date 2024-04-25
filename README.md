@@ -50,3 +50,8 @@ docker run -e DATABASE_URL=mysql+pymysql://admin:123456789@databasesportapp.cvwe
 
 docker run -p 5001:5001 calendar-mngr
 ```
+
+remover db de prueba
+```
+sudo rm -rf /Users/juansanchez/Documents/Github/MISO/sa-ms-py-calendar-mngr/app/instance/*
+```
