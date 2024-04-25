@@ -172,9 +172,7 @@ class VistaTrainingSessionID(Resource):
                 training_session.sport_sessions = sport_sessions
 
         return {
-            "training_session": training_session_schema.dump(
-                training_sessions, many=True
-            ),
+            "content": training_session_schema.dump(training_sessions, many=True),
             "message": "Se encontró la sesión de entrenamiento exitosamente",
             "code": 200,
         }, 200
