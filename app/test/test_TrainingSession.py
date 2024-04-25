@@ -103,3 +103,11 @@ class TestVistaTrainingSession(unittest.TestCase):
             json.loads(response.data)["message"], "Sesión de Entrenamiento eliminada"
         )
         self.assertEqual(json.loads(response.data)["code"], 200)
+
+    def test_get_sportsession(self):
+        response = self.app.get("/sport_session")
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.data), {"message": "Lista de Sesiones Deportivas", "content": [], "code": 200}
+        )

@@ -351,12 +351,27 @@ class VistaSportSession(Resource):
             return {"message": error_msg + str(e)}, 500
 
     def get(self):
-        sport_session = SportsSession.query.all()
-        return {
-            "message": "Lista de Sesiones Deportivas",
-            "code": 200,
-            "content": sports_session_schema.dump(sport_session, many=True),
-        }, 200
+        try:
+            sport_sessions = SportsSession.query.all()
+            if sport_sessions is None:
+                return {"message": "No se encontró la sesión deportiva"}, 404
+            
+            for sport_session in sport_sessions:
+                objective_instructions = ObjectiveInstruction.query.filter(
+                    ObjectiveInstruction.id_sport_session == sport_session.id
+                )
+                if objective_instructions is not None:
+                    sport_session.objecive_instructions = objective_instructions
+
+            return {
+                "message": "Lista de Sesiones Deportivas",
+                "code": 200,
+                "content": sports_session_schema.dump(sport_sessions, many=True),
+            }, 200
+        except IntegrityError as e:
+            return {"message": error_msg + str(e)}, 400
+        except Exception as e:
+            return {"message": error_msg + str(e)}, 500
 
 
 class VistaSportSessionID(Resource):
