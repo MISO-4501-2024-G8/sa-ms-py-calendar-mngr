@@ -32,6 +32,7 @@ date_format = "%Y-%m-%d %H:%M:%S"
 
 error_msg = "Error: "
 error_upd_msg = "No se pudo Realizar la Actualización "
+error_training_session_msg = "No se encontró la sesión de entrenamiento"
 
 
 def generate_uuid():
@@ -47,7 +48,9 @@ def calculate_total_time(instructions):
     return total_time
 
 
-def create_objective_instruction(sport_session, objective, instructions):
+def create_objective_instruction(
+    sport_session, objective, instructions, id_training_session
+):
     objective_instructions = []
     for instruction in instructions:
         if instruction["id_objective"] == objective["id_objective"]:
@@ -59,14 +62,16 @@ def create_objective_instruction(sport_session, objective, instructions):
             ]
             data_objective_instruction["instruction_time"] = instruction["time"]
             data_objective_instruction["target_achieved"] = 0
-            data_objective_instruction["createdAt"] = datetime.now().isoformat() # Quitar el isoformat # TODO
-            data_objective_instruction["updatedAt"] = datetime.now().isoformat() # Quitar el isoformat # TODO
+            data_objective_instruction["createdAt"] = datetime.now()
+            data_objective_instruction["updatedAt"] = datetime.now()
             objective_instruction = ObjectiveInstruction(**data_objective_instruction)
-            # json_object = objective_instruction_schema.dump(objective_instruction)
             objective_instructions.append(data_objective_instruction)
             # print(objective_instructions)
-            # db.session.add(objective_instruction) # TODO
-            # db.session.commit() # TODO
+            if id_training_session == "id_test":
+                db.session.add(objective_instruction)
+                db.session.commit()
+                data_objective_instruction["createdAt"] = datetime.now().isoformat()
+                data_objective_instruction["updatedAt"] = datetime.now().isoformat()
     return objective_instructions
 
 
@@ -83,23 +88,28 @@ def create_sport_session(
     data_sport_session["repeats"] = objective["repeats"]
     data_sport_session["location"] = data["location"]
     data_sport_session["total_time"] = total_time
-    data_sport_session["session_event"] = data["session_event"]
-    data_sport_session["qty_objectives_achived"] = 0
-    data_sport_session["createdAt"] = datetime.now().isoformat() # Quitar el isoformat # TODO
-    data_sport_session["updatedAt"] = datetime.now().isoformat() # Quitar el isoformat # TODO
-    # print(data_sport_session)
-    sport_session = SportsSession(**data_sport_session)
-    # db.session.add(sport_session) # TODO
-    # db.session.commit() # TODO
-    objective_instructions = create_objective_instruction(
-        sport_session, objective, instructions
+    data_sport_session["session_event"] = datetime.strptime(
+        data["session_event"], date_format
     )
-    # data['objecive_instructions'] = objective_instructions
-    # json_sport_object = sports_session_schema.dump(sport_session)
+    data_sport_session["qty_objectives_achived"] = 0
+    data_sport_session["createdAt"] = datetime.now()
+    data_sport_session["updatedAt"] = datetime.now()
+    sport_session = SportsSession(**data_sport_session)
+    if id_training_session == "id_test":
+        db.session.add(sport_session)
+        db.session.commit()
+        data_sport_session["session_event"] = data["session_event"]
+        data_sport_session["createdAt"] = (
+            datetime.now().isoformat()
+        )  # Quitar el isoformat # TODO
+        data_sport_session["updatedAt"] = (
+            datetime.now().isoformat()
+        )  # Quitar el isoformat # TODO
+    objective_instructions = create_objective_instruction(
+        sport_session, objective, instructions, id_training_session
+    )
     data_sport_session["objecive_instructions"] = objective_instructions
-    # print(data_sport_session)
     return data_sport_session
-
 
 
 class VistaStatusCheck(Resource):
@@ -111,7 +121,9 @@ class VistaTrainingSession(Resource):
 
     def post(self):
         data = request.get_json()
-        data["id"] = generate_uuid()
+        if "id" not in data:
+            data["id"] = generate_uuid()
+
         data["session_date"] = datetime.strptime(data["session_date"], date_format)
         data["createdAt"] = datetime.now()
         data["updatedAt"] = datetime.now()
@@ -140,40 +152,48 @@ class VistaTrainingSessionID(Resource):
             TrainingSession.id_sport_user == id
         )
         if training_sessions is None:
-            return {"message": "No se encontró la sesión de entrenamiento del usuario"}, 404
+            return {
+                "message": "No se encontró la sesión de entrenamiento del usuario"
+            }, 404
 
         for training_session in training_sessions:
             sport_sessions = SportsSession.query.filter(
                 SportsSession.id_training_session == training_session.id
             )
-            
+
             for sport_session in sport_sessions:
                 objective_instructions = ObjectiveInstruction.query.filter(
                     ObjectiveInstruction.id_sport_session == sport_session.id
                 )
                 if objective_instructions is not None:
                     sport_session.objecive_instructions = objective_instructions
-            
+
             if sport_sessions is not None:
                 training_session.sport_sessions = sport_sessions
 
         return {
-            "training_session": training_session_schema.dump(training_sessions, many=True),
+            "training_session": training_session_schema.dump(
+                training_sessions, many=True
+            ),
             "message": "Se encontró la sesión de entrenamiento exitosamente",
             "code": 200,
         }, 200
-    
+
     def put(self, id):
         data = request.get_json()
-        training_session = TrainingSession.query.filter(TrainingSession.id == id).first()
+        training_session = TrainingSession.query.filter(
+            TrainingSession.id == id
+        ).first()
         if training_session is None:
-            return {"message": "No se encontró la sesión de entrenamiento"}, 404
+            return {"message": error_training_session_msg}, 404
 
         training_session.id_sport_user = data["id_sport_user"]
         training_session.id_event = data["id_event"]
         training_session.event_category = data["event_category"]
         training_session.sport_type = data["sport_type"]
-        training_session.session_date = datetime.strptime(data["session_date"], date_format)
+        training_session.session_date = datetime.strptime(
+            data["session_date"], date_format
+        )
         training_session.updatedAt = datetime.now()
         db.session.commit()
         return {
@@ -181,16 +201,22 @@ class VistaTrainingSessionID(Resource):
             "code": 200,
             "content": training_session_schema.dump(training_session),
         }, 200
-    
+
     def delete(self, id):
-        training_session = TrainingSession.query.filter(TrainingSession.id == id).first()
+        training_session = TrainingSession.query.filter(
+            TrainingSession.id == id
+        ).first()
         if training_session is None:
-            return {"message": "No se encontró la sesión de entrenamiento"}, 404
-        
-        sport_sessions = SportsSession.query.filter(SportsSession.id_training_session == training_session.id)
+            return {"message": error_training_session_msg}, 404
+
+        sport_sessions = SportsSession.query.filter(
+            SportsSession.id_training_session == training_session.id
+        )
 
         for sport_session in sport_sessions:
-            objective_instructions = ObjectiveInstruction.query.filter(ObjectiveInstruction.id_sport_session == sport_session.id)
+            objective_instructions = ObjectiveInstruction.query.filter(
+                ObjectiveInstruction.id_sport_session == sport_session.id
+            )
             for objective_instruction in objective_instructions:
                 db.session.delete(objective_instruction)
             db.session.delete(sport_session)
@@ -212,7 +238,7 @@ class VistaSportSession(Resource):
                     TrainingSession.id == id_training_session
                 ).first()
                 if training_session is None:
-                    return {"message": "No se encontró la sesión de entrenamiento"}, 404
+                    return {"message": error_training_session_msg}, 404
 
                 if training_session.event_category != "plan_training":
                     return {
@@ -353,9 +379,9 @@ class VistaSportSession(Resource):
     def get(self):
         try:
             sport_sessions = SportsSession.query.all()
-            if sport_sessions is None:
+            if sport_sessions is None or len(sport_sessions) == 0:
                 return {"message": "No se encontró la sesión deportiva"}, 404
-            
+
             for sport_session in sport_sessions:
                 objective_instructions = ObjectiveInstruction.query.filter(
                     ObjectiveInstruction.id_sport_session == sport_session.id
@@ -386,11 +412,9 @@ class VistaSportSessionID(Resource):
         if objective_instruction is None:
             return {"message": "No se encontró la instrucción de objetivo"}, 404
 
+        sport_session.objecive_instructions = objective_instruction
         return {
-            "sport_session": sports_session_schema.dump(sport_session),
-            "objective_instruction": objective_instruction_schema.dump(
-                objective_instruction
-            ),
-            "message": "Se encontró la sesión deportiva exitosamente",
+            "message": "Sesión Deportiva encontrada",
             "code": 200,
+            "content": sports_session_schema.dump(sport_session),
         }, 200
