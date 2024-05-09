@@ -17,7 +17,7 @@ def generate_uuid():
     return parts[0]
 
 
-DATABASE_URI = config('DATABASE_URL', default=f'sqlite:///training_{generate_uuid()}.db')
+DATABASE_URI = config('DATABASE_URL', default=f'sqlite:///calendar_{generate_uuid()}.db')
 print(' * DATABASE_URI:', DATABASE_URI)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -40,7 +40,7 @@ api.add_resource(VistaSportSessionID, '/sport_session/<string:id>')
 jwt = JWTManager(app)
 
 
-print(' * TRAINING MNGR corriendo ----------------')
+print(' * CALENDAR MNGR corriendo ----------------')
 
 if __name__=='__main__': 
     app.run(port=5001)
