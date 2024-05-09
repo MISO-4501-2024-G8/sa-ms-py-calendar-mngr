@@ -26,7 +26,7 @@ pip3 install -r requirements.txt
 correr flask
 ```
 export FLASK_APP=app/app.py
-export DATABASE_URL=mysql+pymysql://admin:123456789@databasesportapp.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_session
+export DATABASE_URL=mysql+pymysql://admin:c5d5e19030104ba38e131c2ee8e76dec@dbsportapprestore.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_session
 flask run -p 5001
 ```
 
@@ -46,7 +46,7 @@ docker build -t calendar-mngr .
 
 Correr imagen de docker local
 ```
-docker run -e DATABASE_URL=mysql+pymysql://admin:123456789@databasesportapp.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_session -p 5001:5001 calendar-mngr
+docker run -e DATABASE_URL=mysql+pymysql://admin:c5d5e19030104ba38e131c2ee8e76dec@dbsportapprestore.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_session -p 5001:5001 calendar-mngr
 
 docker run -p 5001:5001 calendar-mngr
 ```
