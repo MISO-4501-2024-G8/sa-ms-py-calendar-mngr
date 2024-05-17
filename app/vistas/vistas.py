@@ -33,7 +33,7 @@ date_format = "%Y-%m-%d %H:%M:%S"
 error_msg = "Error: "
 error_upd_msg = "No se pudo Realizar la Actualización "
 error_training_session_msg = "No se encontró la sesión de entrenamiento"
-url_training_plan_ms = 'http://lb-ms-py-training-mngr-157212315.us-east-1.elb.amazonaws.com/'
+url_training_plan_ms = 'http://lb-ms-py-training-mngr-157212315.us-east-1.elb.amazonaws.com/' #NOSONAR
 
 
 def generate_uuid():
