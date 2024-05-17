@@ -33,6 +33,7 @@ date_format = "%Y-%m-%d %H:%M:%S"
 error_msg = "Error: "
 error_upd_msg = "No se pudo Realizar la Actualización "
 error_training_session_msg = "No se encontró la sesión de entrenamiento"
+error_sport_session_msg = "No se encontró la sesión deportiva"
 url_training_plan_ms = 'http://lb-ms-py-training-mngr-157212315.us-east-1.elb.amazonaws.com/' #NOSONAR
 
 
@@ -352,7 +353,7 @@ class VistaSportSession(Resource):
         try:
             sport_sessions = SportsSession.query.all()
             if sport_sessions is None or len(sport_sessions) == 0:
-                return {"message": "No se encontró la sesión deportiva"}, 404
+                return {"message": error_sport_session_msg}, 404
 
             sport_sessions_obj = []
             for sport_session in sport_sessions:
@@ -383,7 +384,7 @@ class VistaSportSessionID(Resource):
     def get(self, id):
         sport_session = SportsSession.query.filter(SportsSession.id == id).first()
         if sport_session is None:
-            return {"message": "No se encontró la sesión deportiva"}, 404
+            return {"message": error_sport_session_msg}, 404
 
         objective_instruction = ObjectiveInstruction.query.filter(
             ObjectiveInstruction.id_sport_session == sport_session.id
@@ -405,7 +406,7 @@ class VistaSportSessionID(Resource):
     def put(self, id):
         sport_session = SportsSession.query.filter(SportsSession.id == id).first()
         if sport_session is None:
-            return {"message": "No se encontró la sesión deportiva", "code": 404}, 404
+            return {"message": error_sport_session_msg, "code": 404}, 404
 
         objective_instructions = ObjectiveInstruction.query.filter(
             ObjectiveInstruction.id_sport_session == sport_session.id
@@ -426,7 +427,7 @@ class VistaSportSessionID(Resource):
     def delete(self, id):
         sport_session = SportsSession.query.filter(SportsSession.id == id).first()
         if sport_session is None:
-            return {"message": "No se encontró la sesión deportiva", "code": 404}, 404
+            return {"message": error_sport_session_msg, "code": 404}, 404
 
         objective_instructions = ObjectiveInstruction.query.filter(
             ObjectiveInstruction.id_sport_session == sport_session.id
