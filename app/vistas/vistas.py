@@ -115,7 +115,18 @@ class VistaTrainingSession(Resource):
         data = request.get_json()
         if "id" not in data:
             data["id"] = generate_uuid()
-
+        
+        training_sessions = TrainingSession.query.filter(
+            TrainingSession.id_sport_user == data["id_sport_user"],
+            TrainingSession.id_event == data["id_event"],
+        ).all()
+        
+        if training_sessions is not None and len(training_sessions) > 0:
+            return {
+                "message": "Ya existe una sesión de entrenamiento para este usuario y evento",
+                "code": 400,
+            }, 400
+        
         data["session_date"] = datetime.strptime(data["session_date"], date_format)
         data["createdAt"] = datetime.now()
         data["updatedAt"] = datetime.now()
