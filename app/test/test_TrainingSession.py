@@ -376,6 +376,10 @@ class TestVistaTrainingSession(unittest.TestCase):
         )
         self.assertEqual(json.loads(response.data)["code"], 201)
 
+        self.app.get("/sport_user_session/no_id")
+        user_sport_session_response = self.app.get("/sport_user_session/e2f75148")
+        self.assertEqual(user_sport_session_response.status_code, 200)
+
         objective_id = json.loads(response.data)["content"][0]["objective_instructions"][0]["id"]
         self.app.put(
             "/sport_session_objective/no_id",
