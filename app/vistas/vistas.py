@@ -379,6 +379,32 @@ class VistaSportSession(Resource):
         except Exception as e:
             return {"message": error_msg + str(e)}, 500
 
+class VistaSportUserSession(Resource):
+    def get(self, id):
+        training_sessions = TrainingSession.query.filter(
+            TrainingSession.id_sport_user == id,
+            TrainingSession.event_category == "plan_training",
+        ).all()
+        if training_sessions is None:
+            return {"message": "No se encontró la sesión de entrenamiento del usuario", "code": 404}, 404
+        sport_sessions = []
+        for training_session in training_sessions:
+            sport_session = SportsSession.query.filter(
+                SportsSession.id_training_session == training_session.id
+            ).all()
+            if sport_session is not None and len(sport_session) > 0:
+                for sport_session in sport_session:
+                    sport_s = sports_session_schema.dump(sport_session)
+                    sport_sessions.append(sport_s)
+        
+        if len(sport_sessions) == 0:
+            return {"message": "No se encontraron sesiones deportivas del usuario", "code": 404}, 404
+        return {
+            "message": "Lista de Sesiones Deportivas del Usuario",
+            "code": 200,
+            "content": sport_sessions,
+        }, 200
+
 
 class VistaSportSessionID(Resource):
     def get(self, id):
