@@ -43,12 +43,13 @@ def generate_uuid():
     return parts[0]
 
 
-def calculate_total_time(instructions, repeats):
-    total_time = 0
-    for instruction in instructions:
-        total_time += instruction["instruction_time"]
-    total_time = total_time * repeats # Se multiplica por las repeticiones ej: 5 min * 3 repeticiones = 15 min
-    return total_time
+# def calculate_total_time(instructions):
+#     total_time = 0
+#     for instruction in instructions:
+#         if instruction["target_achieved"] == 1:
+#             total_time += instruction["instruction_time"]
+#     #total_time = total_time * repeats # Se multiplica por las repeticiones ej: 5 min * 3 repeticiones = 15 min
+#     return total_time
 
 
 def create_objective_instruction(
@@ -76,7 +77,7 @@ def create_objective_instruction(
 def create_sport_session(
     id_training_session, objective, instructions, new_name, week, day, data
 ):
-    total_time = calculate_total_time(instructions, objective["repeats"])
+    #total_time = calculate_total_time(instructions, objective["repeats"])
     data_sport_session = {}
     data_sport_session["id"] = generate_uuid()
     data_sport_session["id_training_session"] = id_training_session
@@ -85,7 +86,7 @@ def create_sport_session(
     data_sport_session["day"] = day
     data_sport_session["repeats"] = objective["repeats"]
     data_sport_session["location"] = data["location"]
-    data_sport_session["total_time"] = total_time
+    data_sport_session["total_time"] = 0
     data_sport_session["session_event"] = datetime.strptime(
         data["session_event"], date_format
     )
@@ -286,6 +287,7 @@ class VistaSportSession(Resource):
                 return {"message": "No se encontró el plan de entrenamiento"}, 404
             training_plan_response = training_plan_rq.json()
             training_plan = training_plan_response["training_plan"]
+            print(training_plan)
             
 
             # Se debe obtener: id_training_plan, semana, dia y con esos datos se debe generar una sesion deportiva
@@ -430,6 +432,7 @@ class VistaSportSessionID(Resource):
         }, 200
     
     def put(self, id):
+        data = request.get_json()
         sport_session = SportsSession.query.filter(SportsSession.id == id).first()
         if sport_session is None:
             return {"message": error_sport_session_msg, "code": 404}, 404
@@ -441,6 +444,7 @@ class VistaSportSessionID(Resource):
         for objective_instruction in objective_instructions:
             if objective_instruction.target_achieved == 1:
                 objectives_achived += 1
+        sport_session.total_time = data["total_time"]
         sport_session.qty_objectives_achived = objectives_achived
         sport_session.updatedAt = datetime.now()
         db.session.commit()
