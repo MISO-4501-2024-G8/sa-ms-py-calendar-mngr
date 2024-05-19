@@ -43,14 +43,6 @@ def generate_uuid():
     return parts[0]
 
 
-# def calculate_total_time(instructions):
-#     total_time = 0
-#     for instruction in instructions:
-#         if instruction["target_achieved"] == 1:
-#             total_time += instruction["instruction_time"]
-#     #total_time = total_time * repeats # Se multiplica por las repeticiones ej: 5 min * 3 repeticiones = 15 min
-#     return total_time
-
 
 def create_objective_instruction(
     sport_session, objective, instructions, id_training_session
@@ -77,7 +69,6 @@ def create_objective_instruction(
 def create_sport_session(
     id_training_session, objective, instructions, new_name, week, day, data
 ):
-    #total_time = calculate_total_time(instructions, objective["repeats"])
     data_sport_session = {}
     data_sport_session["id"] = generate_uuid()
     data_sport_session["id_training_session"] = id_training_session
