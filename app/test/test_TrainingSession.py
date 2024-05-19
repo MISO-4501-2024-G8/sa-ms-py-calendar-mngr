@@ -414,6 +414,7 @@ class TestVistaTrainingSession(unittest.TestCase):
                 "day": "Lunes",
                 "location": "Manizales",
                 "session_event": "2023-02-28 14:30:00",
+                "total_time": 1,
             },
         )
         self.assertEqual(response_put.status_code, 200)
